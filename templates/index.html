@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tumor Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Tumor Detection</h1>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+        <form id="upload-form" action="/predict" method="post" enctype="multipart/form-data">
+            <div class="upload-container">
+                <input type="file" name="file" accept="image/*" id="file-input" required>
+                <label for="file-input" class="upload-label">
+                    <i class="fas fa-upload"></i> Choose an image
+                </label>
+            </div>
+            <!-- No need for a submit button -->
+        </form>
+        <div id="result" class="result-container">
+            <div class="result-content">
+                <img id="uploaded-image" src="" alt="Uploaded Image" class="uploaded-image">
+                <div id="result-text" class="result-text"></div>
+            </div>
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/yourfontawesomekit.js"></script>
+    <script>
+        const form = document.getElementById('upload-form');
+        const resultDiv = document.getElementById('result');
+        const resultText = document.getElementById('result-text');
+        const uploadedImage = document.getElementById('uploaded-image');
+
+        form.addEventListener('change', async (event) => {
+            const formData = new FormData(form);
+
+            const response = await fetch('/predict', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.text();
+            resultText.textContent = `Result: ${result}`;
+            
+            // Display uploaded image
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
+            const imageUrl = URL.createObjectURL(file);
+            uploadedImage.src = imageUrl;
+
+            // Show the result container
+            resultDiv.classList.add('show');
+
+            // Add class based on the result
+            if (result === 'Normal Cell') {
+                resultDiv.classList.add('normal-cell');
+            } else {
+                resultDiv.classList.add('tumor-cell');
+            }
+        });
+    </script>
+</body>
+</html>
