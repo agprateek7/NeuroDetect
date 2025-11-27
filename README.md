@@ -1,4 +1,4 @@
-# Tumor Detection Web App
+# NeuroDetect
 
 This project is a web application for detecting brain tumors in MRI images using Convolutional Neural Networks (CNNs). The app allows users to upload an MRI image, and it predicts whether the image shows a normal or a tumor cell.
 
